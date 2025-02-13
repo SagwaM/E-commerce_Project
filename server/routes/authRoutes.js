@@ -7,7 +7,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 
 // Register a user
-router.post("/register", async (req, res) => {
+router.post("/signup", async (req, res) => {
   const { name, email, password, confirmPassword, phone, address } = req.body;
 
   // Validate required fields
