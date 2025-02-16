@@ -1,4 +1,3 @@
-# E-commerce_Project
 # MERN Stack E-Commerce Platform
 
 ## 📌 Overview
@@ -6,32 +5,47 @@ This project is a **full-fledged E-Commerce platform** built using the **MERN st
 
 ---
 
+## 🚀 Live Deployment
+- **Frontend**: [Shopsphere Frontend](https://shopsphere-sigma-six.vercel.app/)
+- **Backend**: [Shopsphere Backend](https://e-commerce-project-kqmm.onrender.com)
+
+### 🔑 Testing Credentials
+#### **Admin Login**
+- **Email**: admin@example.com
+- **Password**: Admin@123
+
+#### **Customer Login**
+- **Email**: customer@example.com
+- **Password**: Customer@123
+
+---
+
 ## 🚀 Features
-### 🔹 User Authentication
+### 💩 User Authentication
 - Sign up, login, and logout functionality.
 - Role-based authentication (Admin, Customer).
 - JWT-based authentication for secure access.
 
-### 🔹 Product Management
+### 💩 Product Management
 - Admin can **add, edit, delete, and manage products**.
 - Customers can **view products, filter by category, search for products**.
 
-### 🔹 Cart & Order Management
+### 💩 Cart & Order Management
 - Add/remove items from the cart.
 - Customers can **place orders**.
 - Admin can **update order status (Pending, Shipped, Delivered)**.
 
-### 🔹 Payment Integration
+### 💩 Payment Integration
 - M-Pesa payment gateway integration.
 - Order summary before checkout (subtotal, tax, shipping, discounts, final total).
 
-### 🔹 Dashboard
+### 💩 Dashboard
 - **Admin Dashboard**: Manage users, orders, and products.
 - **Customer Dashboard**: Track orders and manage profile.
 
 ---
 
-## 🏗️ Tech Stack
+## 🛠️ Tech Stack
 | Technology     | Usage |
 |---------------|----------------|
 | **Frontend**  | React.js, Bootstrap |
@@ -45,27 +59,27 @@ This project is a **full-fledged E-Commerce platform** built using the **MERN st
 
 ## ⚙️ Installation & Setup
 
-### 🔸 Prerequisites
+### 💮 Prerequisites
 Make sure you have the following installed:
 - [Node.js](https://nodejs.org/)
 - [MongoDB](https://www.mongodb.com/)
 - [Yarn](https://yarnpkg.com/) (for frontend)
 - [NPM](https://www.npmjs.com/) (for backend)
 
-### 🔹 Clone the Repository
+### 💩 Clone the Repository
 ```bash
-git clone https://github.com/your-username/ecommerce-platform.git
+git clone https://github.com/SagwaM/ecommerce-platform.git
 cd ecommerce-platform
 ```
 
-### 🔹 Backend Setup
+### 💩 Backend Setup
 ```bash
 cd backend
 npm install   # Install dependencies
 npm start     # Start backend server
 ```
 
-### 🔹 Frontend Setup
+### 💩 Frontend Setup
 ```bash
 cd frontend
 yarn install  # Install dependencies
@@ -76,28 +90,39 @@ The app will now be running at **http://localhost:5173/** (frontend) and **http:
 
 ---
 
-## 🛠️ API Endpoints
-### 🔹 Authentication
+## 🔒 API Endpoints
+### 💩 Authentication
 | Method | Endpoint | Description |
 |--------|-------------------------|-------------|
 | POST | `/api/auth/signup` | Register a new user |
 | POST | `/api/auth/login` | Login user |
 | POST | `/api/auth/logout` | Logout user |
 
-### 🔹 Products
+### 💩 Products
 | Method | Endpoint | Description |
 |--------|-------------------------|-------------|
 | GET | `/api/products` | Get all products |
+| GET | `/api/products/:id` | Get a single product by ID |
 | POST | `/api/products` | Add a new product (Admin) |
 | PUT | `/api/products/:id` | Update product details (Admin) |
 | DELETE | `/api/products/:id` | Delete a product (Admin) |
 
-### 🔹 Orders
+### 💩 Orders
 | Method | Endpoint | Description |
 |--------|-------------------------|-------------|
 | GET | `/api/orders` | Get all orders (Admin) |
+| GET | `/api/orders/:id` | Get order details by ID |
 | POST | `/api/orders` | Create a new order |
 | PUT | `/api/orders/update-status/:id` | Update order status (Admin) |
+| DELETE | `/api/orders/:id` | Cancel an order |
+
+### 💩 Users
+| Method | Endpoint | Description |
+|--------|-------------------------|-------------|
+| GET | `/api/users` | Get all users (Admin) |
+| GET | `/api/users/:id` | Get user details by ID |
+| PUT | `/api/users/:id` | Update user information |
+| DELETE | `/api/users/:id` | Delete a user (Admin) |
 
 ---
 
@@ -108,23 +133,26 @@ The app will now be running at **http://localhost:5173/** (frontend) and **http:
 
 ---
 
-## 🚀 Deployment
-### 🔹 Backend Deployment (Render)
+## 🚀 Deployment Guide
+### 💩 Backend Deployment (Render)
 1. Push your backend code to GitHub.
-2. Go to [Render](https://render.com/) and create a new web service.
-3. Connect your GitHub repo and deploy.
+2. Go to [Render](https://render.com/) and create a new **Web Service**.
+3. Connect your GitHub repository.
+4. Set **Root Directory** to `backend`.
+5. Set **Build Command**: `npm install`
+6. Set **Start Command**: `npm start`
+7. Add necessary environment variables in **Settings**.
+8. Click **Deploy** and wait for the deployment to complete.
 
-### 🔹 Frontend Deployment (Vercel)
+### 💩 Frontend Deployment (Vercel)
 1. Push your frontend code to GitHub.
-2. Go to [Vercel](https://vercel.com/) and import your project.
-3. Deploy your frontend.
-
----
-
-## 📷 Screenshots
-| Home Page | Product List | Checkout |
-|-----------|-------------|----------|
-| ![Home](screenshots/home.png) | ![Products](screenshots/products.png) | ![Checkout](screenshots/checkout.png) |
+2. Go to [Vercel](https://vercel.com/) and **Import Project**.
+3. Connect your GitHub repository.
+4. Set **Root Directory** to `frontend`.
+5. Set **Build Command**: `yarn install && yarn build`
+6. Set **Output Directory**: `dist`
+7. Add necessary environment variables in **Settings**.
+8. Click **Deploy** and wait for the deployment to complete.
 
 ---
 
@@ -151,11 +179,11 @@ This project is licensed under the MIT License.
 
 ---
 
-## 📬 Contact
+## 💌 Contact
 For any questions or suggestions, feel free to reach out:
 - **Email**: maria.sagwa@strathmore.edu
-- **GitHub**: [SagwaM]([https://github.com/your-username](https://github.com/SagwaM))
-- 
+- **GitHub**: [SagwaM](https://github.com/SagwaM)
+
 
 ---
 

@@ -29,17 +29,27 @@ const CustomerDashboard = () => {
 
     // Fetch customer details
     axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/customer/details`, axiosConfig)
-      .then(response => setCustomer(response.data))
+      .then(response => {
+        console.log("Customer Details:", response.data);
+        setUser(response.data)
+      })
       .catch(error => console.error("Error fetching customer details:", error));
 
     // Fetch order statistics
     axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/customer/stats`, axiosConfig)
-      .then(response => setStats(response.data))
+      .then(response =>{
+        console.log("Order Stats:", response.data);
+        setStats(response.data);
+        
+      })
       .catch(error => console.error("Error fetching order stats:", error));
 
     // Fetch recent orders
     axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/customer/orders`, axiosConfig)
-      .then(response => setRecentOrders(response.data))
+      .then(response =>{
+        console.log("Recent Orders:", response.data);
+        setRecentOrders(response.data)
+      })
       .catch(error => console.error("Error fetching recent orders:", error));
   }, []);
 
@@ -147,7 +157,7 @@ const CustomerDashboard = () => {
         {/* Content Area */}
         <div>
           <h2>Welcome back, {user.name}!</h2>
-          <p>Status: <strong>Gold Member</strong></p>
+          <p>Status: <strong>{user.membershipStatus}</strong></p>
           
           {/* Quick Order Summary */}
           <div className="row mb-4">
@@ -160,13 +170,13 @@ const CustomerDashboard = () => {
             <div className="col-md-3">
               <div className="card p-3 shadow-sm">
                 <h5>Total Spent</h5>
-                <p>💰 <strong>${stats.totalSpent}</strong></p>
+                <p>💰 <strong>${stats.totalSpent.toFixed(2)}</strong></p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="card p-3 shadow-sm">
                 <h5>Last Order</h5>
-                <p>🔄 <strong>{stats.lastOrder.date} - {stats.lastOrder.status}</strong></p>
+                <p>🔄 <strong>{stats.lastOrder?.date || "No Orders"} - {stats.lastOrder?.status || "N/A"}</strong></p>
               </div>
             </div>
             <div className="col-md-3">
@@ -189,13 +199,13 @@ const CustomerDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {recentOrders.length > 0 ? (
+              {recentOrders?.length > 0 ? (
                 recentOrders.map((order) => (
-                  <tr key={order._id}>
-                    <td>#{order._id}</td>
-                    <td>{order.date}</td>
-                    <td>{order.status}</td>
-                    <td>${order.total}</td>
+                  <tr key={order.id}>
+                    <td>#{order.id}</td>
+                    <td>{order.createdAt ? new Date(order.createdAt).toDateString() : "N/A"}</td>
+                    <td>{order.status || "Pending"}</td>
+                    <td>${order.total || "0.00"}</td>
                   </tr>
                 ))
               ) : (

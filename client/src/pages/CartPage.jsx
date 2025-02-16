@@ -45,26 +45,26 @@ export const CartPage = () => {
     fetchCart();
   }, []);
 
-  const handleQuantityChange = async (id, quantity) => {
+  const handleQuantityChange = async (_id, quantity) => {
     if (quantity < 1){
         alert("Quantity must be at least 1");
         return;
     }    
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/cart/${id}`, { quantity });
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/cart/${_id}`, { quantity });
       setCartItems((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+        prev.map((item) => (item._id === _id ? { ...item, quantity } : item))
       );
     } catch (error) {
       console.error("Error updating quantity:", error);
     }
   };
 
-  const handleRemoveItem = async (id) => {
+  const handleRemoveItem = async (_id) => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/cart/${id}`);
-      setCartItems((prev) => prev.filter((item) => item.id !== id));
-      setSelectedItems((prev) => prev.filter((itemId) => itemId !== id));
+      setCartItems((prev) => prev.filter((item) => item._id !== _id));
+      setSelectedItems((prev) => prev.filter((itemId) => itemId !== _id));
     } catch (error) {
       console.error("Error removing item:", error);
     }
@@ -79,28 +79,28 @@ export const CartPage = () => {
     }
   };
 
-  const toggleSelectItem = (id) => {
+  const toggleSelectItem = (_id) => {
     setSelectedItems((prevSelected) => {
-      if (prevSelected.includes(id)) {
-        return prevSelected.filter((itemId) => itemId !== id);
+      if (prevSelected.includes(_id)) {
+        return prevSelected.filter((itemId) => itemId !== _id);
       } else {
-        return [...prevSelected, id];
+        return [...prevSelected, _id];
       }
     });
   };
 
-  const handleSaveForLater = (id) => {
-    const itemToSave = cartItems.find((item) => item.id === id);
+  const handleSaveForLater = (_id) => {
+    const itemToSave = cartItems.find((item) => item._id === _id);
     if (itemToSave) {
       setSavedItems((prev) => [...prev, itemToSave]);
-      handleRemoveItem(id);
+      handleRemoveItem(_id);
     }
   };
-  const handleMoveToCart = (id) => {
-    const itemToMove = savedItems.find((item) => item.id === id);
+  const handleMoveToCart = (_id) => {
+    const itemToMove = savedItems.find((item) => item._id === _id);
     if (itemToMove) {
       setCartItems((prev) => [...prev, itemToMove]);
-      setSavedItems((prev) => prev.filter((item) => item.id !== id));
+      setSavedItems((prev) => prev.filter((item) => item._id !== _id));
     }
   };
 
@@ -114,8 +114,8 @@ export const CartPage = () => {
   };
 
   const calculateTotal = () =>
-    selectedItems.reduce((total, id) => {
-      const item = cartItems.find((item) => item.id === id);
+    selectedItems.reduce((total, _id) => {
+      const item = cartItems.find((item) => item._id === _id);
       return item ? total + item.product.price * item.quantity : total;
     }, 0);
   

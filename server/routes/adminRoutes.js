@@ -132,7 +132,7 @@ router.get("/stats", authMiddleware("Admin"), async (req, res) => {
     }
 });
 
-router.get("/recent-orders", authMiddleware("Admin"), async (req, res) => {
+router.get("/recent-orders", authMiddleware("Admin", "Customer"), async (req, res) => {
     try {
       const recentOrders = await Order.find().sort({ createdAt: -1 }).limit(5).populate("user", "name email");
       res.json(recentOrders);

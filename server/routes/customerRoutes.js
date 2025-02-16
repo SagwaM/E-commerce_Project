@@ -6,13 +6,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 const Order = require("../models/Order"); // Adjust to your order model
 const User = require("../models/User"); 
 
-router.get(
-    "/orders",
-    authMiddleware("Customer"), // Handles both authentication and role checking
-    (req, res) => {
-        res.json({ message: "Here are your orders!" });
-    }
-);
 
 // Update customer profile
 router.put("/update/:id", authMiddleware (["Admin", "Customer"]), async (req, res) => {
@@ -77,7 +70,10 @@ router.put("/update/:id", authMiddleware (["Admin", "Customer"]), async (req, re
   
       const totalOrders = orders.length;
       const totalSpent = orders.reduce((acc, order) => acc + order.totalPrice, 0);
-      const lastOrder = orders[orders.length - 1]; // Assuming latest order is last
+      const lastOrder = orders[orders.length - 1]; // latest order is last
+
+      // Convert last order into a readable string
+    const formattedLastOrder = `${new Date(lastOrder.createdAt).toDateString()} - ${lastOrder.status}`;
   
       // Find the most purchased item
       const itemCounts = {};
@@ -92,7 +88,7 @@ router.put("/update/:id", authMiddleware (["Admin", "Customer"]), async (req, re
       res.json({
         totalOrders,
         totalSpent,
-        lastOrder: `${lastOrder.createdAt.toDateString()} - ${lastOrder.status}`,
+        lastOrder: formattedLastOrder,
         mostPurchasedItem,
       });
     } catch (error) {
