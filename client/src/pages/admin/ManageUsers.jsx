@@ -7,7 +7,7 @@ const ManageUsers = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/users")
+      .get("http://localhost:5000/api/admin/users")
       .then(({ data }) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
   }, []);

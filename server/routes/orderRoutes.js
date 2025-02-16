@@ -2,8 +2,10 @@ const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
+const Product = require("../models/Product"); // For recommendations
 
 const router = express.Router();
+
 
 // Checkout: Place an order
 router.post("/checkout", authMiddleware("Customer"), async (req, res) => {
@@ -27,9 +29,9 @@ router.post("/checkout", authMiddleware("Customer"), async (req, res) => {
 
         // Create new order
         const order = new Order({
-            user: userId,
-            items: orderItems,
-            totalPrice,
+            user: req.user._id,
+            items: cart.items,
+            totalPrice: cart.totalPrice,
             status: "Pending" // Default status
         });
 
@@ -42,6 +44,24 @@ router.post("/checkout", authMiddleware("Customer"), async (req, res) => {
     } catch (error) {
         console.error("Checkout error:", error.message);
         res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+// GET /api/orders/checkout - Retrieve items in the cart for checkout
+router.get("/checkout", authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id; // Extract user ID from authenticated request
+
+        // Fetch the user's cart (assuming you store cart in the Order model)
+        const cartItems = await Order.find({ user: userId, status: "cart" });
+
+        if (!cartItems.length) {
+            return res.status(404).json({ message: "Your cart is empty." });
+        }
+
+        res.json(cartItems);
+    } catch (error) {
+        console.error("Error fetching checkout items:", error);
+        res.status(500).json({ message: "Server error." });
     }
 });
 
@@ -196,5 +216,50 @@ router.delete("/cancel/:orderId", authMiddleware("Customer"), async (req, res) =
         res.status(500).json({ message: "Server error", error: error.message });
     }
 });
+
+// ✅ Fetch order summary for a customer
+router.get("/summary/:id", async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.params.id });
+
+    if (!orders.length) return res.status(404).json({ message: "No orders found" });
+
+    const totalOrders = orders.length;
+    const totalSpent = orders.reduce((sum, order) => sum + order.totalPrice, 0);
+
+    res.json({ totalOrders, totalSpent });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ✅ Fetch recent orders for a customer
+router.get("/recent/:id", async (req, res) => {
+  try {
+    const recentOrders = await Order.find({ user: req.params.id }).sort({ createdAt: -1 }).limit(5);
+    
+    if (!recentOrders.length) return res.status(404).json({ message: "No recent orders found" });
+
+    res.json(recentOrders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ✅ Fetch a specific order details
+router.get("/:id", async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id).populate("user", "name email");
+    
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+module.exports = router;
+
 
 module.exports = router;

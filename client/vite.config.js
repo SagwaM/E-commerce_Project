@@ -7,4 +7,7 @@ export default defineConfig({
   server: {
     historyApiFallback: true, // 👈 This helps React Router handle direct routes
   },
+  build: {
+    outDir: 'dist', // This ensures the build files are placed in the "dist" folder
+  },
 })

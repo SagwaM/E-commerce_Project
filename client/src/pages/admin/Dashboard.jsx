@@ -67,17 +67,18 @@ const Dashboard = () => {
         data: salesData ? salesData.revenue : [],
         borderColor: "#28a745",
         fill: false,
+
       },
     ],
   };
 
   return (
-    <div className="dashboard">
+    <div className="dashboard" style={{ height: "100vh", width: "80vw", margin: "0" }}>
       <h1 className="dashboard-title">Admin Dashboard</h1>
 
       {/* ✅ Quick Stats Section */}
-      <div className="stats-grid">
-        <div className="stats-card">
+      <div className="stats-grid" >
+        <div className="stats-card" >
           <FaShoppingCart className="stats-icon orders" />
           <div>
             <h3>{stats.totalOrders}</h3>

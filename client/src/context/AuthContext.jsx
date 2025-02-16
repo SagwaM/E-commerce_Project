@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"; // 🚨 Import navigate
 
 
 // Create Authentication Context
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

@@ -1,102 +1,279 @@
+import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaShippingFast, FaLock, FaGift, FaFacebook, FaTwitter, FaInstagram, FaSun, FaMoon } from "react-icons/fa";
-import { useState, useEffect } from "react";
-import "../styles/HomePage.css"; // Custom styles
+import "bootstrap-icons/font/bootstrap-icons.css"; // Bootstrap Icons
+import "animate.css"; // Import Animate.css for animations
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 
 const HomePage = () => {
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true"; // Load dark mode preference from local storage
-  });
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
-  // Apply dark mode
+    // Toggle Theme
+  const toggleTheme = () => {
+      setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  // Back to Top Visibility
   useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark-mode");
-    } else {
-      document.body.classList.remove("dark-mode");
-    }
-    localStorage.setItem("darkMode", darkMode); // Save preference
-  }, [darkMode]);
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Scroll to Top
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <div>
+    <div className={isDarkMode ? "bg-dark text-white" : "bg-light text-dark"} 
+    style={{
+        width: "100vw",
+        height: "100vh",
+        margin: 0,
+        padding: 0,
+      }}>
       {/* Hero Section */}
-      <section className="hero-section text-center text-white d-flex flex-column justify-content-center align-items-center">
-        <h1 className="display-4 fw-bold animate-fade-in">
-          Welcome to Our E-Commerce Platform
-        </h1>
-        <p className="lead animate-slide-up">
-          Discover amazing products at unbeatable prices. Shop now & enjoy exclusive deals!
-        </p>
-        
-        {/* Shop Now Button */}
-        <Link to="/signup" className="btn btn-primary shop-now-btn">Shop Now</Link>
+      <section 
+        className={`hero-section text-dark text-white d-flex align-items-center justify-content-center${isDarkMode ? "bg-secondary" : "bg-primary"}`}
+        style={{ minHeight: "100vh", padding: "20px" }}
+        >
+        <div className="text-center animate__animated animate__fadeInLeft">
+          <h1 className={`display-3 ${isDarkMode ? "text-white" : "text-dark"}`}>Welcome to ShopShpere</h1>
+          <p className={`lead ${isDarkMode ? "text-light" : "text-dark"}`}>Discover amazing deals on your favorite products.</p>
+          <Link to="/products" className="btn btn-warning btn-lg mt-3">
+            <i className="bi bi-cart4 me-2"></i> Shop Now
+          </Link>
+        </div>
+        <div className="animate__animated animate__fadeInRight">
+          <img
+            src="../assets/images/hero.webp"
+            alt="Shopping illustration"
+            className="img-fluid rounded"
+          />
+        </div>
       </section>
 
-      {/* Features Section */}
-      <section className="container text-center py-5">
-        <h2 className="fw-bold">Why Shop With Us?</h2>
-        <div className="row mt-4">
-          <div className="col-md-4 animate-fade-in">
-            <FaShippingFast size={50} className="text-primary" />
-            <h4 className="mt-3">Fast & Free Shipping</h4>
-            <p>Enjoy fast and reliable shipping on all orders.</p>
-          </div>
-          <div className="col-md-4 animate-fade-in">
-            <FaLock size={50} className="text-primary" />
-            <h4 className="mt-3">Secure Payments</h4>
-            <p>We use 256-bit encryption to keep your transactions safe.</p>
-          </div>
-          <div className="col-md-4 animate-fade-in">
-            <FaGift size={50} className="text-primary" />
-            <h4 className="mt-3">Exclusive Discounts</h4>
-            <p>Sign up today to get access to members-only deals!</p>
+      {/* Featured Products */}
+      <section className={`featured-products py-5 ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"}`} style={{ width: "100vw", margin: 0, padding: 0  }}>
+        <div className= {`container ${isDarkMode ? "bg-secondary text-white" : "bg-light text-dark"}`}>
+          <h2 className="text-center mb-4 animate__animated animate__fadeInUp">Featured Products</h2>
+          <div className="row">
+            {/* Product 1 */}
+            <div className="col-md-4 mb-4">
+              <div className={`card ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"} animate__animated animate__fadeIn`}>
+                <img src="https://via.placeholder.com/300" className="card-img-top" alt="Product 1" />
+                <div className="card-body text-center">
+                  <h5 className="card-title">Product 1</h5>
+                  <p className="card-text">$25.00</p>
+                  <Link to="/products/1" className="btn btn-primary">
+                    <i className="bi bi-eye me-2"></i> View Product
+                  </Link>
+                </div>
+              </div>
+            </div>
+            {/* Product 2 */}
+            <div className="col-md-4">
+              <div className={`card ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"} animate__animated animate__fadeIn`}>
+                <img src="https://via.placeholder.com/300" className="card-img-top" alt="Product 2" />
+                <div className="card-body text-center">
+                  <h5 className="card-title">Product 2</h5>
+                  <p className="card-text">$30.00</p>
+                  <Link to="/products/2" className="btn btn-primary">
+                    <i className="bi bi-eye me-2"></i> View Product
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Customer Reviews Section */}
-      <section className="customer-reviews text-center py-5">
-        <div className="overlay"></div> {/* Background overlay for better text contrast */}
-        <h2 className="fw-bold">What Our Customers Say</h2>
-        <div className="row mt-4 position-relative">
-          <div className="col-md-4 animate-slide-up">
-            <p className="review-text">"Amazing service! My order arrived in just two days!"</p>
-            <p className="fw-bold">- Sarah L.</p>
-          </div>
-          <div className="col-md-4 animate-slide-up">
-            <p className="review-text">"Great quality products and excellent customer support!"</p>
-            <p className="fw-bold">- Mike D.</p>
-          </div>
-          <div className="col-md-4 animate-slide-up">
-            <p className="review-text">"I saved so much money with their deals. Highly recommended!"</p>
-            <p className="fw-bold">- Lisa M.</p>
+      {/* Categories */}
+      <section className= {`categories-section py-5 ${isDarkMode ? "bg-secondary text-white" : "bg-light text-dark"}`} style={{ width: "100vw", margin: 0, padding: 0  }}>
+        <div className={`container ${isDarkMode ? "bg-secondary text-white": "bg-light text-dark"} text-center animate__animated animate__fadeInUp`}>
+          <h2 className={`mb-4 ${isDarkMode ? "bg-secondary text-white" : "bg-light text-dark"}`}>Shop by Categories</h2>
+          <div className="row">
+            <div className="col-md-4">
+              <div className="card bg-dark text-white">
+                <div className="card-body">
+                  <i className="bi bi-laptop display-4"></i>
+                  <h5 className="card-title mt-3">Electronics</h5>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card bg-dark text-white">
+                <div className="card-body">
+                  <i className="bi bi-watch display-4"></i>
+                  <h5 className="card-title mt-3">Fashion</h5>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="cta-section text-center py-5">
-        <h2 className="fw-bold text-black">Join Us Today!</h2>
-        <p className="text-black lead">Sign up now and start shopping with exclusive member discounts.</p>
+      {/* Why Choose Us */}
+      <section className={`why-choose-us py-5 ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"}`} style={{ width: "100vw", margin: 0, padding: 0  }}>
+        <div className=" text-center animate__animated animate__fadeInUp">
+          <h2 className="mb-4">Why Choose Us</h2>
+          <div className="row">
+            <div className="col-md-4">
+              <i className="bi bi-truck display-4 text-primary"></i>
+              <h5 className="mt-3">Fast Delivery</h5>
+            </div>
+            <div className="col-md-4">
+              <i className="bi bi-shield-lock display-4 text-primary"></i>
+              <h5 className="mt-3">Secure Payments</h5>
+            </div>
+            <div className="col-md-4">
+              <i className="bi bi-headset display-4 text-primary"></i>
+              <h5 className="mt-3">24/7 Support</h5>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section
+        className={`testimonials py-5 ${
+          isDarkMode ? "bg-secondary text-white" : "bg-light text-dark"
+        }`}
+      >
+        <div className={`container text-center ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"}`}>
+          <h2 className="mb-4">What Our Customers Say</h2>
+          <div
+            id="testimonialsCarousel"
+            className="carousel slide"
+            data-bs-ride="carousel"
+          >
+            <div className="carousel-inner">
+              <div className="carousel-item active">
+                <p>
+                  "Amazing shopping experience! The products were delivered quickly and the
+                  quality was fantastic."
+                </p>
+                <p>- Customer 1</p>
+              </div>
+              <div className="carousel-item">
+                <p>"E-Shop has the best deals in town. Highly recommend their services!"</p>
+                <p>- Customer 2</p>
+              </div>
+              <div className="carousel-item">
+                <p>
+                  "I found everything I needed in one place. Great customer support and secure
+                  payment options."
+                </p>
+                <p>- Customer 3</p>
+              </div>
+            </div>
+            <button
+              className="carousel-control-prev"
+              type="button"
+              data-bs-target="#testimonialsCarousel"
+              data-bs-slide="prev"
+              style={{ color: "black"}}
+            >
+              <span 
+              className="carousel-control-prev-icon"
+              style={{
+                filter: "invert(1)",
+                backgroundColor: "black",
+                borderRadius: "50%",
+              }}   
+              ></span>
+
+            </button>
+            <button
+              className="carousel-control-next"
+              type="button"
+              data-bs-target="#testimonialsCarousel"
+              data-bs-slide="next"
+              style={{ color: "black"}}
+            >
+              <span 
+                className="carousel-control-next-icon"
+                style={{
+                  filter: "invert(1)",
+                  backgroundColor: "black",
+                  borderRadius: "50%",
+                }}
+              ></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className= {`newsletter py-5 ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"}`}>
+        <div className={`container text-center ${isDarkMode ? "bg-secondary text-white" : "bg-light text-dark"}`}>
+          <h2>Subscribe to Our Newsletter</h2>
+          <p>Stay updated with the latest deals and discounts.</p>
+          <div className="input-group mt-3" style={{ maxWidth: "500px", margin: "0 auto" }}>
+            <input type="email" className="form-control" placeholder="Enter your email" />
+            <button className="btn btn-primary">Subscribe</button>
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer text-center py-4">
-        <p className="mb-2">Follow us on social media</p>
-        <div className="social-icons">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><FaFacebook size={30} /></a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><FaTwitter size={30} /></a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><FaInstagram size={30} /></a>
+      <footer className={`footer py-4 ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"} text-center`} style={{ width: "100vw", margin: 0 }}>
+        <p>&copy; {new Date().getFullYear()} E-Shop. All rights reserved.</p>
+        {/* Social Icons */}
+        <div className="social-icons mb-3">
+          <a href="#" className={`me-3 ${isDarkMode ? "text-white" : "text-dark"}`}>
+            <i className="bi bi-facebook"></i>
+          </a>
+          <a href="#" className={`me-3 ${isDarkMode ? "text-white" : "text-dark"}`}>
+            <i className="bi bi-twitter"></i>
+          </a>
+          <a href="#" className={`me-3 ${isDarkMode ? "text-white" : "text-dark"}`}>
+            <i className="bi bi-instagram"></i>
+          </a>
         </div>
-        <p className="mt-3">&copy; {new Date().getFullYear()} E-Commerce. All rights reserved.</p>
       </footer>
 
-      {/* Dark Mode Toggle */}
-      <div className="dark-mode-toggle" onClick={() => setDarkMode(!darkMode)}>
-        {darkMode ? <FaSun size={25} /> : <FaMoon size={25} />}
-      </div>
+      {/* Theme Toggle Floating Button */}
+      <button
+        onClick={toggleTheme}
+        className={`btn btn-light position-fixed rounded-circle p-2 ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"}`}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          width: "50px",
+          height: "50px",
+          zIndex: "1000",
+          border: "none",
+        }}
+      >
+        <i className={`bi ${isDarkMode ? "bi-sun" : "bi-moon"}`} style={{ fontSize: "24px" }}></i>
+      </button>
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          className={`btn btn-light position-fixed rounded-circle p-2 ${
+            isDarkMode ? "bg-dark text-white" : "bg-light text-dark"
+          }`}
+          style={{
+            bottom: "20px",
+            right: "20px",
+            width: "50px",
+            height: "50px",
+            zIndex: "1000",
+            border: "none",
+          }}
+        >
+          <i className="bi bi-arrow-up" style={{ fontSize: "24px" }}></i>
+        </button>
+      )}
     </div>
   );
 };

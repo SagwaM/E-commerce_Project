@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import Loader from "../components/Loader"; // ✅ Import a loading spinner component

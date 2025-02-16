@@ -2,8 +2,19 @@ const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
 const Product = require("../models/Product");
 const router = express.Router();
+const multer = require("multer");
 
 
+// Multer Configuration (File Upload)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage });
 
 // Admin: Add a Product
 router.post(
@@ -75,24 +86,15 @@ router.put("/:id", authMiddleware("Admin"), async (req, res) => {
     }
 });
 
-
-
-
 // Admin: Delete a Product
-router.delete(
-  "/:id",
-  authMiddleware("Admin"),
-  async (req, res) => {
+router.delete("/:id",authMiddleware("Admin"),async (req, res) => {
     try {
       const { id } = req.params;
-
       const deletedProduct = await Product.findByIdAndDelete(id);
 
       if (!deletedProduct) {
         return res.status(404).json({ message: "Product not found" });
       }
-
-      await product.remove();
       res.status(200).json({ message: "Product removed successfully" });
     } catch (error) {
       res.status(500).json({ message: "Error deleting product", error: error.message });
@@ -112,5 +114,22 @@ router.get(
     }
   }
 );
+
+
+// ⬇️ Create Product Route (Handles Images)
+router.post("/image",authMiddleware("Admin"), upload.single("image"), async (req, res) => {
+  try {
+    const { name, description, price, category, stock } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
+
+    const newProduct = new Product({ name, description, price, category, stock, image });
+    await newProduct.save();
+    
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error("Error saving product:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 
 module.exports = router;

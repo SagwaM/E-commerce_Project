@@ -3,8 +3,9 @@ import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../index.css"; // Import CSS styles
+import "../styles/HomePage.css"; // Custom styles
 
-const SignupPage = () => {
+const SignupPage = ({ darkMode }) => {
   const { signup } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -74,6 +75,7 @@ const SignupPage = () => {
         <p className="text-center mt-3">
           Already have an account? <Link to="/login" className="text-primary">Login</Link>
         </p>
+        
       </div>
     </div>
   );

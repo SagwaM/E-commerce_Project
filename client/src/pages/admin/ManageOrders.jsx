@@ -5,13 +5,24 @@ import { Table, Button, Container, Badge } from "react-bootstrap";
 const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/orders", { withCredentials: true })
-      .then(({ data }) => setOrders(data))
-      .catch((error) => console.error("Error fetching orders:", error));
-  }, []);
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Retrieve token
+        const response = await axios.get("http://localhost:5000/api/admin/orders", {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true
+        });
+        setOrders(response.data.orders); // Ensure to set orders properly
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    fetchOrders(); // Call the async function inside useEffect
+  }, []);
+  
   const updateStatus = async (orderId, status) => {
     try {
       await axios.put(`http://localhost:5000/api/orders/update-status/${orderId}`, { status });
@@ -23,8 +34,8 @@ const ManageOrders = () => {
   
 
   return (
-    <Container>
-      <h1 className="my-4">Manage Orders</h1>
+    <Container style={{ height: "100vh", width: "80vw", margin: "0" }}>
+      <h1 className="my-4 d-flex text-center" >Manage Orders</h1>
       <Table striped bordered hover responsive>
         <thead className="table-dark">
           <tr>
@@ -39,18 +50,18 @@ const ManageOrders = () => {
           {orders.map((order) => (
             <tr key={order._id}>
               <td>{order._id}</td>
-              <td>{order.customer}</td>
+              <td>{order.user.name}</td>
               <td>
                 <Badge bg={order.status === "Delivered" ? "success" : order.status === "Shipped" ? "primary" : "warning"}>
                   {order.status}
                 </Badge>
               </td>
-              <td>${order.total}</td>
+              <td>${order.totalPrice}</td>
               <td>
-                <Button variant="primary" className="me-2" onClick={() => updateOrderStatus(order._id, "Shipped")}>
+                <Button variant="primary" className="me-2" onClick={() => updateStatus(order._id, "Shipped")}>
                   Ship
                 </Button>
-                <Button variant="success" onClick={() => updateOrderStatus(order._id, "Delivered")}>
+                <Button variant="success" onClick={() => updateStatus(order._id, "Delivered")}>
                   Deliver
                 </Button>
               </td>

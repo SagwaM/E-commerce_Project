@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const Order = require("../models/Order");
+const User = require("../models/User");
 
 
 //  Admin-Only Route
@@ -69,6 +70,42 @@ router.get("/orders", authMiddleware("Admin"), async (req, res) => {
     } catch (error) {
         console.error("Error fetching admin orders:", error.message);
         res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+router.get("/users", async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+router.put("/users/:id", async (req, res) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+router.delete("/users/:id", async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.json({ message: "User deleted" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+router.get("/payments", async (req, res) => {
+    try {
+        const payments = await Payment.find();
+        res.json(payments);
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
     }
 });
 

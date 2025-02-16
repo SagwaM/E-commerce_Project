@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import "../index.css"; // Import global styles
+import "../styles/HomePage.css"; // Custom styles
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);

@@ -11,7 +11,9 @@ import AdminSettings from "../pages/admin/AdminSettings";
 const AdminRoutes = () => {
   return (
     <Routes>
+      {/* ✅ Protect All Admin Routes */}
       <Route element={<AdminProtectedRoute />}>
+        {/* ✅ Use Admin Layout for Nested Routing */}
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/products" element={<ManageProducts />} />
