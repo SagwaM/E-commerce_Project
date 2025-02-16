@@ -153,9 +153,9 @@ This project is licensed under the MIT License.
 
 ## 📬 Contact
 For any questions or suggestions, feel free to reach out:
-- **Email**: your.email@example.com
-- **GitHub**: [your-username](https://github.com/your-username)
-- **LinkedIn**: [Your Name](https://linkedin.com/in/your-name)
+- **Email**: maria.sagwa@strathmore.edu
+- **GitHub**: [SagwaM]([https://github.com/your-username](https://github.com/SagwaM))
+- 
 
 ---
 
