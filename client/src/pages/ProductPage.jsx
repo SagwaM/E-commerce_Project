@@ -24,7 +24,7 @@ export const ProductsPage = () => {
 
   useEffect(() => {
     // Fetch products from backend
-    axios.get("http://localhost:5000/api/products/")
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products/`)
       .then((response) => {
         setProducts(response.data);
       })

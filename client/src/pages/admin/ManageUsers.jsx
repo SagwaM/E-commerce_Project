@@ -7,13 +7,13 @@ const ManageUsers = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/admin/users")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/users`)
       .then(({ data }) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
   }, []);
 
   const changeUserRole = (id, newRole) => {
-    fetch(`http://localhost:5000/api/admin/users/${id}`, {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/users/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role: newRole }),
@@ -23,7 +23,7 @@ const ManageUsers = () => {
   };
   const deleteUser = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/users/${id}`);
       setUsers(users.filter((user) => user._id !== id));
     } catch (error) {
       console.error("Error deleting user:", error);

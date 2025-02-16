@@ -29,7 +29,7 @@ export const CartPage = () => {
           return;
         }
     
-        const response = await axios.get("http://localhost:5000/api/cart/", {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/cart/`, {
           headers: {
             Authorization: `Bearer ${token}`, // Send token in headers
           },
@@ -51,7 +51,7 @@ export const CartPage = () => {
         return;
     }    
     try {
-      await axios.put(`http://localhost:5000/api/cart/${id}`, { quantity });
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/cart/${id}`, { quantity });
       setCartItems((prev) =>
         prev.map((item) => (item.id === id ? { ...item, quantity } : item))
       );
@@ -62,7 +62,7 @@ export const CartPage = () => {
 
   const handleRemoveItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/cart/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/cart/${id}`);
       setCartItems((prev) => prev.filter((item) => item.id !== id));
       setSelectedItems((prev) => prev.filter((itemId) => itemId !== id));
     } catch (error) {
@@ -71,7 +71,7 @@ export const CartPage = () => {
   };
   const handleClearCart = async () => {
     try {
-      await axios.delete("http://localhost:5000/api/cart");
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/cart`);
       setCartItems([]);
       setSelectedItems([]);
     } catch (error) {

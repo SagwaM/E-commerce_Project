@@ -21,7 +21,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "http://localhost:5173", // Allow frontend origin
+  origin: ["http://localhost:5173", "https://shopsphere-sigma-six.vercel.app/"],// Allow frontend origin
   credentials: true, // Allow credentials (cookies, authorization headers)
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
@@ -30,12 +30,19 @@ app.use(express.json());// Allows JSON request bodies
 app.use(express.urlencoded({ extended: true }));// Allows form submissions
 app.use("/uploads", express.static("uploads")); // Serve uploaded images
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow frontend
-  res.header("Access-Control-Allow-Credentials", "true"); // Allow credentials
+  const allowedOrigins = ["http://localhost:5173", "https://shopsphere-sigma-six.vercel.app"];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  
+  res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+
 
 // MongoDB Connection
 mongoose
@@ -56,6 +63,7 @@ app.use("/api/recommendations", recommendationRoutes); // Recommendation routes
 app.use("/api/users", userRoutes); // User routes
 app.use("/api/payments", paymentRoutes); // Payment routes
 app.use("/api/feedback", feedbackRoutes); // Feedback routes
+
 
 // Routes Placeholder
 app.get("/", (req, res) => res.send("API is running..."));

@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
 export const CheckoutPage = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
@@ -33,17 +32,17 @@ export const CheckoutPage = () => {
           navigate("/login"); // Redirect if no token
           return;
         }    
-        const response = await axios.get("http://localhost:5000/api/cart/", {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/cart/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         console.log("Cart Response:", response.data); // Debugging
         setCartItems(response.data.cart.items || []);
-        setSelectedItems(response.data.map((item) => item._id)); // Select all by default
+        setSelectedItems(response.data.cart.items.map((item) => item._id)); // Select all by default
       } catch (error) {
         console.error("Error fetching cart:", error);
-        if (error.response && error.response.status === 401) {
+        if (error.response?.status === 401) {
           alert("Session expired. Please log in again.");
           localStorage.removeItem("token"); // Clear invalid token
           navigate("/login");
@@ -65,12 +64,16 @@ export const CheckoutPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   const handleMpesaPayment = async () => {
+    if (!formData.phone) {
+      alert("Please enter a valid phone number.");
+      return;
+    }
     try {
       setLoading(true);
 
       // Send payment request to your backend
       const response = await axios.post(
-        "http://localhost:5000/api/mpesa/pay",
+        `${import.meta.env.VITE_API_BASE_URL}/api/mpesa/pay`,
         {
           amount: calculateTotal(),
           phone: formData.phone, // Phone number to receive STK push
@@ -81,8 +84,7 @@ export const CheckoutPage = () => {
 
       setLoading(false);
       if (response.data.success) {
-        alert("Payment request sent. Check your phone to complete payment.");
-      } else {
+        alert("STK push simulated. Go to Safaricom portal to complete the transaction.");
         alert("Payment failed. Try again.");
       }
     } catch (error) {
@@ -129,7 +131,7 @@ export const CheckoutPage = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/orders/checkout", // Send order data to backend
+        `${import.meta.env.VITE_API_BASE_URL}/api/orders/checkout`, // Send order data to backend
         orderData,
         {
           headers: {
@@ -216,21 +218,43 @@ export const CheckoutPage = () => {
       <div className="mt-4">
         <h3>Payment Method</h3>
         <div className="form-check">
-          <input className="form-check-input" type="radio" name="paymentMethod" id="mpesa" value="mpesa" checked={paymentMethod === "mpesa"} onChange={(e) => setPaymentMethod(e.target.value)} />
+          <input
+            className="form-check-input"
+            type="radio"
+            name="paymentMethod"
+            id="mpesa"
+            value="mpesa"
+            checked={paymentMethod === "mpesa"}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          />
           <label className="form-check-label" htmlFor="mpesa">M-Pesa</label>
         </div>
 
         <div className="form-check">
-          <input className="form-check-input" type="radio" name="paymentMethod" id="creditcard" value="creditcard" checked={paymentMethod === "creditcard"} onChange={(e) => setPaymentMethod(e.target.value)} />
+          <input
+            className="form-check-input"
+            type="radio"
+            name="paymentMethod"
+            id="creditcard"
+            value="creditcard"
+            checked={paymentMethod === "creditcard"}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          />
           <label className="form-check-label" htmlFor="creditcard">Credit Card</label>
         </div>
       </div>
 
-      {/* Buttons */}
+      {/* Checkout and M-Pesa Payment Buttons */}
       <div className="text-center mt-4 d-flex justify-content-center gap-3">
         <button className="btn btn-primary btn-sm" onClick={handleCheckout} disabled={loading}>
           {loading ? "Processing..." : "Place Order"}
         </button>
+
+        {paymentMethod === "mpesa" && (
+          <button className="btn btn-success btn-sm" onClick={handleMpesaPayment} disabled={loading}>
+            {loading ? "Processing..." : "Pay with M-Pesa"}
+          </button>
+        )}
         <Link to="/cart" className="btn btn-secondary btn-sm">Back to Cart</Link>
       </div>
       <button

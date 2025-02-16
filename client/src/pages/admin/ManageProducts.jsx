@@ -26,7 +26,7 @@ const ManageProducts = () => {
   // 🆕 Fetch products from backend
   const fetchProducts = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/products/", {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products/`, {
         headers: getAuthHeaders(),
       });
       setProducts(data);
@@ -95,7 +95,7 @@ const ManageProducts = () => {
       };
       if (editingProduct) {
         // Update product
-        await axios.put(`http://localhost:5000/api/products/${productId}`, formDataToSend, {
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/products/${productId}`, formDataToSend, {
           headers: { "Content-Type": "multipart/form-data", ...getAuthHeaders() },
         });
 
@@ -106,7 +106,7 @@ const ManageProducts = () => {
         setMessage("Product updated successfully!");
       } else {
         // Add new product
-        const { data } = await axios.post("http://localhost:5000/api/products/", formDataToSend, {
+        const { data } = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/products/`, formDataToSend, {
           headers: { "Content-Type": "multipart/form-data", ...getAuthHeaders() },
         });
 
@@ -126,7 +126,7 @@ const ManageProducts = () => {
   // 🚨 Delete Product
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`, {
         headers: getAuthHeaders(),
       });
       setProducts((prev) => prev.filter((product) => product._id !== id));

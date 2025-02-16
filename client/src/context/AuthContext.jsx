@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   // 🔹 Fetch user profile (ensure token is valid)
   const fetchUserProfile = async (token) => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/profile", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/profile`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (formData) => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
   // Signup function
   const signup = async (formData) => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/signup", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

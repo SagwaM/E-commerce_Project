@@ -10,7 +10,7 @@ const ManageOrders = () => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("token"); // Retrieve token
-        const response = await axios.get("http://localhost:5000/api/admin/orders", {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/orders`, {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true
         });
@@ -25,7 +25,7 @@ const ManageOrders = () => {
   
   const updateStatus = async (orderId, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/orders/update-status/${orderId}`, { status });
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/orders/update-status/${orderId}`, { status });
       setOrders(orders.map(order => order._id === orderId ? { ...order, status } : order));
     } catch (error) {
       console.error("Error updating order status:", error);

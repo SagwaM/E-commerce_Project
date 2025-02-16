@@ -26,17 +26,17 @@ const Dashboard = () => {
     console.log("🔄 Dashboard Mounted");
     
     // Fetch dashboard stats
-    axios.get("http://localhost:5000/api/admin/stats")
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/stats`)
       .then(({ data }) => setStats(data))
       .catch((error) => console.error("🚨 Stats Fetch Error:", error));
 
     // Fetch recent orders
-    axios.get("http://localhost:5000/api/admin/recent-orders")
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/recent-orders`)
       .then(({ data }) => setRecentOrders(data))
       .catch((error) => console.error("🚨 Orders Fetch Error:", error));
 
     // Fetch sales report
-    axios.get("http://localhost:5000/api/admin/sales-report")
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/sales-report`)
       .then(({ data }) => setSalesData(data))
       .catch((error) => console.error("🚨 Sales Report Fetch Error:", error));
 
