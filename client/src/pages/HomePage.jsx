@@ -5,6 +5,7 @@ import "bootstrap-icons/font/bootstrap-icons.css"; // Bootstrap Icons
 import "animate.css"; // Import Animate.css for animations
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import axios from "axios"; // Import Axios for API requests
+import heroImage from "../assets/images/hero.webp";
 
 const HomePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -18,7 +19,7 @@ const HomePage = () => {
 
   // Fetch featured products from backend
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchFeaturedProducts = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products/featured`); // Adjust API URL
         setFeaturedProducts(response.data);
@@ -26,7 +27,7 @@ const HomePage = () => {
         console.error("Error fetching featured products:", error);
       }
     };
-    fetchProducts();
+    fetchFeaturedProducts();
   }, []);
 
   // Back to Top Visibility
@@ -65,7 +66,7 @@ const HomePage = () => {
         </div>
         <div className="animate__animated animate__fadeInRight">
           <img
-            src="../assets/images/hero.webp"
+            src={heroImage}
             alt="Shopping illustration"
             className="img-fluid rounded"
           />
