@@ -131,5 +131,14 @@ router.post("/image",authMiddleware("Admin"), upload.single("image"), async (req
     res.status(500).json({ message: "Server Error" });
   }
 });
-
+// Get Featured Products
+router.get("/featured", async (req, res) => {
+  try {
+    const products = await Product.find({ isFeatured: true }).limit(6); // Fetch featured products
+    res.json(products);
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 module.exports = router;

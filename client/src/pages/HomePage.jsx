@@ -4,16 +4,30 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"; // Bootstrap Icons
 import "animate.css"; // Import Animate.css for animations
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-
+import axios from "axios"; // Import Axios for API requests
 
 const HomePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [featuredProducts, setFeaturedProducts] = useState([]); // State for products
 
     // Toggle Theme
   const toggleTheme = () => {
       setIsDarkMode((prevMode) => !prevMode);
   };
+
+  // Fetch featured products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products/featured`); // Adjust API URL
+        setFeaturedProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching featured products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Back to Top Visibility
   useEffect(() => {
@@ -63,32 +77,25 @@ const HomePage = () => {
         <div className= {`container ${isDarkMode ? "bg-secondary text-white" : "bg-light text-dark"}`}>
           <h2 className="text-center mb-4 animate__animated animate__fadeInUp">Featured Products</h2>
           <div className="row">
-            {/* Product 1 */}
-            <div className="col-md-4 mb-4">
-              <div className={`card ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"} animate__animated animate__fadeIn`}>
-                <img src="https://via.placeholder.com/300" className="card-img-top" alt="Product 1" />
-                <div className="card-body text-center">
-                  <h5 className="card-title">Product 1</h5>
-                  <p className="card-text">$25.00</p>
-                  <Link to="/products/1" className="btn btn-primary">
-                    <i className="bi bi-eye me-2"></i> View Product
-                  </Link>
+          {featuredProducts.length > 0 ? (
+              featuredProducts.map((product) => (
+                <div className="col-md-4 mb-4" key={product._id}>
+                  <div className={`card ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"} animate__animated animate__fadeIn`}>
+                    <img src={product.image} className="card-img-top" alt={product.name} />
+                    <div className="card-body text-center">
+                      <h5 className="card-title">{product.name}</h5>
+                      <p className="card-text">${product.price.toFixed(2)}</p>
+                      <Link to={`/products/${product._id}`} className="btn btn-primary">
+                        <i className="bi bi-eye me-2"></i> View Product
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            {/* Product 2 */}
-            <div className="col-md-4">
-              <div className={`card ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"} animate__animated animate__fadeIn`}>
-                <img src="https://via.placeholder.com/300" className="card-img-top" alt="Product 2" />
-                <div className="card-body text-center">
-                  <h5 className="card-title">Product 2</h5>
-                  <p className="card-text">$30.00</p>
-                  <Link to="/products/2" className="btn btn-primary">
-                    <i className="bi bi-eye me-2"></i> View Product
-                  </Link>
-                </div>
-              </div>
-            </div>
+              ))
+            ) : (
+              <p className="text-center">Loading featured products...</p>
+            )}
+            
           </div>
         </div>
       </section>
