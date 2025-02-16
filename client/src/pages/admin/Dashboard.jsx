@@ -3,6 +3,7 @@ import { Bar, Line } from "react-chartjs-2";
 import { FaUsers, FaShoppingCart, FaBox, FaDollarSign } from "react-icons/fa";
 import "../../styles/AdminDashboard.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // ✅ Added for navigation on unauthorized access
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
 
@@ -20,33 +21,56 @@ const Dashboard = () => {
   const [salesData, setSalesData] = useState(null);
   const [loading, setLoading] = useState(true);
   const chartRef = useRef(null);
-  const salesChartRef = useRef(null)
+  const salesChartRef = useRef(null);
+  const navigate = useNavigate(); // ✅ Used to redirect unauthorized users
+
+  // ✅ Get token from localStorage
+  const token = localStorage.getItem("token");
+
+  // ✅ Function to fetch data with token authentication
+  const fetchData = async () => {
+    if (!token) {
+      console.warn("🚨 No token found, redirecting to login...");
+      navigate("/login"); // Redirect to login page if no token
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // Fetch dashboard stats
+      const statsResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/stats`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setStats(statsResponse.data);
+
+      // Fetch recent orders
+      const ordersResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/recent-orders`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setRecentOrders(ordersResponse.data);
+
+      // Fetch sales report
+      const salesResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/sales-report`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSalesData(salesResponse.data);
+      
+    } catch (error) {
+      console.error("🚨 Fetch Error:", error);
+      if (error.response && error.response.status === 401) {
+        console.warn("⛔ Unauthorized access, logging out...");
+        localStorage.removeItem("token"); // Clear token if expired
+        navigate("/login"); // Redirect to login page
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     console.log("🔄 Dashboard Mounted");
-    setLoading(true); // Set loading to true before fetching data
-    
-    // Fetch dashboard stats
-    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/stats`)
-      .then(({ data }) => {
-        console.log("✅ Stats fetched:", data); // Debugging
-        setStats(data);
-      })
-      .catch((error) => console.error("🚨 Stats Fetch Error:", error))
-      .finally(() => setLoading(false)); // Set loading false only after fetching
-
-
-    // Fetch recent orders
-    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/recent-orders`)
-      .then(({ data }) => setRecentOrders(data))
-      .catch((error) => console.error("🚨 Orders Fetch Error:", error));
-
-    // Fetch sales report
-    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/sales-report`)
-      .then(({ data }) => setSalesData(data))
-      .catch((error) => console.error("🚨 Sales Report Fetch Error:", error));
-
-    setLoading(false); // Set loading to false after fetching data
+    fetchData(); // Fetch data on mount
   }, []);
 
   const chartData = {
@@ -82,83 +106,89 @@ const Dashboard = () => {
     <div className="dashboard" style={{ height: "100vh", width: "80vw", margin: "0" }}>
       <h1 className="dashboard-title">Admin Dashboard</h1>
 
-      {/* ✅ Quick Stats Section */}
-      <div className="stats-grid" >
-        <div className="stats-card" >
-          <FaShoppingCart className="stats-icon orders" />
-          <div>
-            <h3>{stats.totalOrders}</h3>
-            <p>Total Orders</p>
+      {/* ✅ Loading Indicator */}
+      {loading ? <p>Loading...</p> : (
+        <>
+          {/* ✅ Quick Stats Section */}
+          <div className="stats-grid">
+            <div className="stats-card">
+              <FaShoppingCart className="stats-icon orders" />
+              <div>
+                <h3>{stats.totalOrders}</h3>
+                <p>Total Orders</p>
+              </div>
+            </div>
+            <div className="stats-card">
+              <FaDollarSign className="stats-icon revenue" />
+              <div>
+                <h3>${stats.totalRevenue}</h3>
+                <p>Total Revenue</p>
+              </div>
+            </div>
+            <div className="stats-card">
+              <FaBox className="stats-icon products" />
+              <div>
+                <h3>{stats.totalProducts}</h3>
+                <p>Total Products</p>
+              </div>
+            </div>
+            <div className="stats-card">
+              <FaUsers className="stats-icon users" />
+              <div>
+                <h3>{stats.totalUsers}</h3>
+                <p>Total Users</p>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="stats-card">
-          <FaDollarSign className="stats-icon revenue" />
-          <div>
-            <h3>${stats.totalRevenue}</h3>
-            <p>Total Revenue</p>
-          </div>
-        </div>
-        <div className="stats-card">
-          <FaBox className="stats-icon products" />
-          <div>
-            <h3>{stats.totalProducts}</h3>
-            <p>Total Products</p>
-          </div>
-        </div>
-        <div className="stats-card">
-          <FaUsers className="stats-icon users" />
-          <div>
-            <h3>{stats.totalUsers}</h3>
-            <p>Total Users</p>
-          </div>
-        </div>
-      </div>
 
-      {/* ✅ Recent Orders Section */}
-      <div className="recent-orders">
-        <h2>Recent Orders</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Customer</th>
-              <th>Status</th>
-              <th>Total</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentOrders.length > 0 ? (
-              recentOrders.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>{order.customer}</td>
-                  <td className={`status ${order.status.toLowerCase()}`}>{order.status}</td>
-                  <td>${order.total}</td>
-                  <td>{new Date(order.date).toLocaleDateString()}</td>
+          {/* ✅ Recent Orders Section */}
+          <div className="recent-orders">
+            <h2>Recent Orders</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Date</th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5">No recent orders</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {recentOrders.length > 0 ? (
+                  recentOrders.map((order) => (
+                    <tr key={order._id}>
+                      <td>{order._id}</td>
+                      <td>{order.customer}</td>
+                      <td className={`status ${order.status.toLowerCase()}`}>{order.status}</td>
+                      <td>${order.total}</td>
+                      <td>{new Date(order.date).toLocaleDateString()}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5">No recent orders</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-      {/* Chart Section */}
-      <div className="chart-container">
-        <h2>Business Overview</h2>
-        <Bar ref={chartRef} data={chartData} />
-      </div>
-      <div className="chart-container">
-        <h2>Sales Report</h2>
-        {salesData ? <Line ref={salesChartRef} data={salesChartData} /> : <p>Loading...</p>}
-      </div>
+          {/* ✅ Chart Section */}
+          <div className="chart-container">
+            <h2>Business Overview</h2>
+            <Bar ref={chartRef} data={chartData} />
+          </div>
+          <div className="chart-container">
+            <h2>Sales Report</h2>
+            {salesData ? <Line ref={salesChartRef} data={salesChartData} /> : <p>Loading...</p>}
+          </div>
+        </>
+      )}
     </div>
   );
 };
+
 
 export default Dashboard;
 // In this file, we have a Dashboard component that fetches data from the backend to display admin dashboard stats and recent orders. We're using the useState and useEffect hooks to manage state and fetch data respectively.

@@ -1,79 +1,74 @@
-/* Global Styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+/* Background Gradient */
+.bg-gradient {
+  background: linear-gradient(to right, #6a11cb, #2575fc); /* Gradient from purple to blue */
+}
+
+/* Card Styling */
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px); /* Hover effect */
+}
+
+.card h2 {
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+}
+
+/* Input Fields */
+.form-control {
+  padding-left: 30px; /* Add padding for icons */
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  height: 45px;
+}
+
+/* Positioning Icons inside Input */
+.position-relative {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #6c757d;
+  font-size: 18px;
+}
+
+/* Button Styling */
+.btn-primary {
+  background: #2575fc;
+  border-radius: 25px;
+  padding: 12px;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #6a11cb;
+}
+
+/* Link Styling */
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .card {
+    width: 90%;
+    padding: 2rem;
   }
-  
-  /* Container for the form */
-  .container {
-    width: 100%;
-    max-width: 400px;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Form input fields */
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  /* Submit button */
-  .btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
-  
-  .btn:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Error message */
-  .error-message {
-    color: red;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  .loader-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .loader {
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
+}

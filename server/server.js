@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const Grid = require('gridfs-stream');
+const multer = require('multer');
 
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -29,6 +31,7 @@ app.use(cors({
 app.use(express.json());// Allows JSON request bodies
 app.use(express.urlencoded({ extended: true }));// Allows form submissions
 app.use("/uploads", express.static("uploads")); // Serve uploaded images
+
 app.use((req, res, next) => {
   const allowedOrigins = ["http://localhost:5173", "https://shopsphere-sigma-six.vercel.app"];
   const origin = req.headers.origin;
@@ -70,3 +73,4 @@ app.get("/", (req, res) => res.send("API is running..."));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+

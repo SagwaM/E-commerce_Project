@@ -3,6 +3,7 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const Order = require("../models/Order");
 const User = require("../models/User");
+const Product = require("../models/Product");
 
 
 //  Admin-Only Route
@@ -109,18 +110,19 @@ router.get("/payments", async (req, res) => {
     }
 });
 
-router.get("/stats", async (req, res) => {
+router.get("/stats", authMiddleware("Admin"), async (req, res) => {
     try {
       const totalOrders = await Order.countDocuments();
-      const totalRevenue = await Order.aggregate([
-        { $group: { _id: null, total: { $sum: "$totalPrice" } } }
-      ]);
       const totalProducts = await Product.countDocuments();
       const totalUsers = await User.countDocuments();
+      const revenueResult = await Order.aggregate([
+        { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+      ]);
+      const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
   
       res.json({
         totalOrders,
-        totalRevenue: totalRevenue[0]?.total || 0,
+        totalRevenue,
         totalProducts,
         totalUsers
       });
@@ -128,6 +130,39 @@ router.get("/stats", async (req, res) => {
       console.error("Backend Error:", error);
       res.status(500).json({ message: "Server error" });
     }
+});
+
+router.get("/recent-orders", authMiddleware("Admin"), async (req, res) => {
+    try {
+      const recentOrders = await Order.find().sort({ createdAt: -1 }).limit(5).populate("user", "name email");
+      res.json(recentOrders);
+    } catch (error) {
+      console.error("Error fetching recent orders:", error.message);
+      res.status(500).json({ message: "Server error" });
+    }
   });
+  
+  router.get("/sales-report", authMiddleware("Admin"), async (req, res) => {
+    try {
+      const salesData = await Order.aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+            totalRevenue: { $sum: "$totalPrice" },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]);
+  
+      res.json({
+        dates: salesData.map((entry) => entry._id),
+        revenue: salesData.map((entry) => entry.totalRevenue),
+      });
+    } catch (error) {
+      console.error("Error fetching sales report:", error.message);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
   
 module.exports = router;
