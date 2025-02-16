@@ -21,7 +21,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "https://shopsphere-sigma-six.vercel.app/"],// Allow frontend origin
+  origin: ["http://localhost:5173", "https://shopsphere-sigma-six.vercel.app"],// Allow frontend origin
   credentials: true, // Allow credentials (cookies, authorization headers)
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
