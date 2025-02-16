@@ -38,7 +38,7 @@ const ProfilePage = () => {
           return;
         }
 
-        const response = await axios.get("http://localhost:5000/api/users/profile", {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -85,7 +85,7 @@ const ProfilePage = () => {
         return;
       }
 
-      const response = await axios.put("http://localhost:5000/api/users/profile", profile, {
+      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/users/profile`, profile, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
