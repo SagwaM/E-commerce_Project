@@ -44,6 +44,17 @@ router.post(
   }
 );
 
+// Get Featured Products
+router.get("/featured", async (req, res) => {
+  try {
+    const featuredproducts = await Product.find({ isFeatured: true }); // Fetch featured products
+    res.json(featuredproducts);
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 // view a single product by id
 router.get("/:id", async (req, res) => {
     console.log("Request received for product ID:", req.params.id);
@@ -131,14 +142,5 @@ router.post("/image",authMiddleware("Admin"), upload.single("image"), async (req
     res.status(500).json({ message: "Server Error" });
   }
 });
-// Get Featured Products
-router.get("/featured", async (req, res) => {
-  try {
-    const featuredproducts = await Product.find({ isFeatured: true }).limit(6); // Fetch featured products
-    res.json(featuredproducts);
-  } catch (error) {
-    console.error("Error fetching featured products:", error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
+
 module.exports = router;
