@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { Bar, Line } from "react-chartjs-2";
+import React, { useState, useEffect, useRef } from "react";
+import { Bar } from "react-chartjs-2";
 import { FaUsers, FaShoppingCart, FaBox, FaDollarSign } from "react-icons/fa";
 import "../../styles/AdminDashboard.css";
 import axios from "axios";
@@ -18,10 +18,8 @@ const Dashboard = () => {
   });
 
   const [recentOrders, setRecentOrders] = useState([]);
-  const [salesData, setSalesData] = useState(null);
   const [loading, setLoading] = useState(true);
   const chartRef = useRef(null);
-  const salesChartRef = useRef(null);
   const navigate = useNavigate(); // ✅ Used to redirect unauthorized users
 
   // ✅ Get token from localStorage
@@ -89,18 +87,6 @@ const Dashboard = () => {
     ],
   };
 
-  const salesChartData = {
-    labels: salesData ? salesData.dates : [],
-    datasets: [
-      {
-        label: "Revenue",
-        data: salesData ? salesData.revenue : [],
-        borderColor: "#28a745",
-        fill: false,
-
-      },
-    ],
-  };
 
   return (
     <div className="dashboard" style={{ height: "100vh", width: "80vw", margin: "0" }}>
@@ -159,9 +145,9 @@ const Dashboard = () => {
                   recentOrders.map((order) => (
                     <tr key={order._id}>
                       <td>{order._id}</td>
-                      <td>{order.customer}</td>
+                      <td>{order.user.name}</td>
                       <td className={`status ${order.status.toLowerCase()}`}>{order.status}</td>
-                      <td>${order.total}</td>
+                      <td>${order.totalPrice}</td>
                       <td>{new Date(order.date).toLocaleDateString()}</td>
                     </tr>
                   ))
@@ -179,10 +165,7 @@ const Dashboard = () => {
             <h2>Business Overview</h2>
             <Bar ref={chartRef} data={chartData} />
           </div>
-          <div className="chart-container">
-            <h2>Sales Report</h2>
-            {salesData ? <Line ref={salesChartRef} data={salesChartData} /> : <p>Loading...</p>}
-          </div>
+          
         </>
       )}
     </div>

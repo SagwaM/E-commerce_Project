@@ -1,7 +1,48 @@
-import React from "react";
+import React, {useState, useEffect}from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios"; // Ensure axios is installed
 
 const CustomerDashboard = () => {
+  const [user, setUser] = useState({ name: "", membership: "" });
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    totalSpent: 0,
+    lastOrder: { date: "", status: "" },
+    mostPurchasedItem: "",
+  });
+  const [recentOrders, setRecentOrders] = useState([]);
+  // Get token from localStorage
+  const token = localStorage.getItem("token");
+  // Axios configuration with Authorization header
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  useEffect(() => {
+    if (!token) {
+      console.error("No authentication token found. Redirecting to login.");
+      window.location.href = "/login";
+      return;
+    }
+
+    // Fetch customer details
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/customer/details`, axiosConfig)
+      .then(response => setCustomer(response.data))
+      .catch(error => console.error("Error fetching customer details:", error));
+
+    // Fetch order statistics
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/customer/stats`, axiosConfig)
+      .then(response => setStats(response.data))
+      .catch(error => console.error("Error fetching order stats:", error));
+
+    // Fetch recent orders
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/customer/orders`, axiosConfig)
+      .then(response => setRecentOrders(response.data))
+      .catch(error => console.error("Error fetching recent orders:", error));
+  }, []);
+
   return (
     <div className="d-flex" style={{ height: "100vh", width: "100vw", margin: "0" }}>
       {/* Sidebar */}
@@ -105,7 +146,7 @@ const CustomerDashboard = () => {
 
         {/* Content Area */}
         <div>
-          <h2>Welcome back, [Customer Name]!</h2>
+          <h2>Welcome back, {user.name}!</h2>
           <p>Status: <strong>Gold Member</strong></p>
           
           {/* Quick Order Summary */}
@@ -113,25 +154,25 @@ const CustomerDashboard = () => {
             <div className="col-md-3">
               <div className="card p-3 shadow-sm">
                 <h5>Total Orders</h5>
-                <p>📦 <strong>X</strong></p>
+                <p>📦 <strong>{stats.totalOrders}</strong></p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="card p-3 shadow-sm">
                 <h5>Total Spent</h5>
-                <p>💰 <strong>$Total Amount</strong></p>
+                <p>💰 <strong>${stats.totalSpent}</strong></p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="card p-3 shadow-sm">
                 <h5>Last Order</h5>
-                <p>🔄 <strong>Date & Status</strong></p>
+                <p>🔄 <strong>{stats.lastOrder.date} - {stats.lastOrder.status}</strong></p>
               </div>
             </div>
             <div className="col-md-3">
               <div className="card p-3 shadow-sm">
                 <h5>Most Purchased Item</h5>
-                <p>🛍️ <strong>Product Name</strong></p>
+                <p>🛍️ <strong>{stats.mostPurchasedItem}</strong></p>
               </div>
             </div>
           </div>
@@ -148,12 +189,20 @@ const CustomerDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>#12345</td>
-                <td>Jan 10, 2025</td>
-                <td>Shipped</td>
-                <td>$120</td>
-              </tr>
+              {recentOrders.length > 0 ? (
+                recentOrders.map((order) => (
+                  <tr key={order._id}>
+                    <td>#{order._id}</td>
+                    <td>{order.date}</td>
+                    <td>{order.status}</td>
+                    <td>${order.total}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center">No recent orders found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
           <button className="btn btn-primary">View All Orders</button>

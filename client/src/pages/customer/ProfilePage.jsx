@@ -116,17 +116,25 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex-grow-1 p-4">
+    <div className={isDarkMode ? "bg-dark text-white" : "bg-light text-dark"}
+    style={{ minHeight: "100vh", background: "linear-gradient(135deg, #614385 , #516395)", padding: "20px" }}>
       {/* Navbar */}
       <NavbarOrders />
-      <div className="container mt-4" style={{ width: "80vw", height: "80vh", margin: 0, padding: 0 }}>
-        <h2>My Account</h2>
+      
         {loading && <p>Loading...</p>}
         {error && <p className="text-danger">{error}</p>}
         {successMessage && <p className="text-success">{successMessage}</p>}
-        <div className="card p-4">
+        <div className="card p-4 shadow-lg rounded mx-auto " style={{
+          maxWidth: "1000px",
+          width: "90vw",
+          margin: "auto",
+          background: "linear-gradient(135deg, #667eea,rgb(172, 85, 100), #ff7eb3)",
+          color: "#333",
+          overflowY: "auto",
+        }}>
+        <h2>My Account</h2>
           <div className="text-center">
-            <img src={profile.profilePic} alt="Profile" className="rounded-circle" width="100" />
+            <img src={profile.profilePic} alt="Profile" className="rounded-circle border border-primary" width="100" />
             <input type="file" accept="image/*" className="form-control mt-2" onChange={handleProfilePicChange} />
           </div>
           <div className="mt-3">
@@ -150,13 +158,12 @@ const ProfilePage = () => {
             <input type="text" className="form-control" value={profile.role} disabled />
           </div>
           <div className="mt-3 text-center">
-            <button className="btn btn-primary" onClick={handleSaveProfile} disabled={loading}>
+            <button className="btn btn-primary shadow-sm" onClick={handleSaveProfile} disabled={loading}>
               {loading ? "Saving..." : "Save Profile"}
             </button>
           </div>
 
           {/* Settings Section */}
-          <h4 className="mt-4">Settings</h4>
           <div className="mt-3">
             <label>Display Language</label>
             <select className="form-control" name="language" value={profile.language} onChange={handleChange}>
@@ -183,7 +190,7 @@ const ProfilePage = () => {
             Delete Account
           </button>
         </div>
-      </div>
+      
 
       {/* Theme Toggle Floating Button */}
       <button
