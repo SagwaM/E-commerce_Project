@@ -109,4 +109,25 @@ router.get("/payments", async (req, res) => {
     }
 });
 
+router.get("/stats", async (req, res) => {
+    try {
+      const totalOrders = await Order.countDocuments();
+      const totalRevenue = await Order.aggregate([
+        { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+      ]);
+      const totalProducts = await Product.countDocuments();
+      const totalUsers = await User.countDocuments();
+  
+      res.json({
+        totalOrders,
+        totalRevenue: totalRevenue[0]?.total || 0,
+        totalProducts,
+        totalUsers
+      });
+    } catch (error) {
+      console.error("Backend Error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
 module.exports = router;

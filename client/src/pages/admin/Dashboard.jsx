@@ -24,11 +24,17 @@ const Dashboard = () => {
 
   useEffect(() => {
     console.log("🔄 Dashboard Mounted");
+    setLoading(true); // Set loading to true before fetching data
     
     // Fetch dashboard stats
     axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/stats`)
-      .then(({ data }) => setStats(data))
-      .catch((error) => console.error("🚨 Stats Fetch Error:", error));
+      .then(({ data }) => {
+        console.log("✅ Stats fetched:", data); // Debugging
+        setStats(data);
+      })
+      .catch((error) => console.error("🚨 Stats Fetch Error:", error))
+      .finally(() => setLoading(false)); // Set loading false only after fetching
+
 
     // Fetch recent orders
     axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/recent-orders`)
