@@ -11,12 +11,12 @@ This project is a **full-fledged E-Commerce platform** built using the **MERN st
 
 ### 🔑 Testing Credentials
 #### **Admin Login**
-- **Email**: admin@example.com
-- **Password**: Admin@123
+- **Email**: sagwakmaria@gmail.com
+- **Password**: @Bts2109*
 
 #### **Customer Login**
-- **Email**: customer@example.com
-- **Password**: Customer@123
+- **Email**: mingyu@example.com
+- **Password**: password123
 
 ---
 
