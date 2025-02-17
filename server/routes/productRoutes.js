@@ -32,6 +32,7 @@ router.post(
         category,
         stock,
         image,
+        specifications,
       });
 
       console.log("Product to be saved:", product);
@@ -73,7 +74,7 @@ router.get("/:id", async (req, res) => {
 
 // Admin: Edit a Product
 router.put("/:id", authMiddleware("Admin"), async (req, res) => {
-    const { name, description, price, category, stock, image } = req.body;
+    const { name, description, price, category, stock, image, specifications } = req.body;
 
     try {
         const product = await Product.findById(req.params.id);
@@ -88,6 +89,7 @@ router.put("/:id", authMiddleware("Admin"), async (req, res) => {
         product.category = category || product.category;
         product.stock = stock || product.stock;
         product.image = image || product.image;
+        product.specifications = specifications || product.specifications;
 
         const updatedProduct = await product.save();
         res.status(200).json({ message: "Product updated successfully!", updatedProduct });

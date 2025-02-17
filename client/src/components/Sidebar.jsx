@@ -52,9 +52,9 @@ const Sidebar = () => {
         )}
 
         <li>
-          <button onClick={logout} className="logout-btn">
+        <Link to="/login">
             <FaSignOutAlt /> Logout
-          </button>
+          </Link>
         </li>
       </ul>
     </aside>

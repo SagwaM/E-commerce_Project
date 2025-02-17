@@ -26,17 +26,21 @@ export const ProductsPage = () => {
     // Fetch products from backend
     axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products/`)
       .then((response) => {
-        setProducts(response.data);
+        if (Array.isArray(response.data)) {
+          setProducts(response.data);
+        } else {
+          console.error("Unexpected response format:", response.data);
+        }
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
       });
   }, []);
 
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = Array.isArray(products) ? products.filter(product =>
     (selectedCategory === "All" || product.category === selectedCategory) &&
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ): [];
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -52,7 +56,7 @@ export const ProductsPage = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     
     // Check if product is already in the cart
-    const existingItem = cart.find(item => item.id === productId);
+    const existingItem = cart.find(item => item._id === productId);
     if (existingItem) {
       iziToast.warning({ title: "Warning", message: "Product already in cart!" });
       return;
@@ -277,11 +281,15 @@ export const ProductDetailPage = () => {
             <h3>${product.price.toFixed(2)}</h3>
             <p>{product.description}</p>
             <h5>Specifications:</h5>
+            
             <ul>
-              {product.specifications?.map((spec, index) => (
-                <li key={index}>{spec}</li>
-              )) || <p>No specifications available.</p>}
+              {Object.entries(product.specifications || {}).map(([key, value], index) => (
+                <li key={index}>
+                  <strong>{key.replace(/_/g, " ")}:</strong> {value}
+                </li>
+              ))}
             </ul>
+ 
             <button className="btn btn-success mt-3" onClick={() => handleAddToCart(product._id)}>
               Add to Cart
             </button>
