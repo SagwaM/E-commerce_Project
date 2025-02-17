@@ -32,7 +32,6 @@ const Dashboard = () => {
       navigate("/login"); // Redirect to login page if no token
       return;
     }
-
     setLoading(true);
     
     try {

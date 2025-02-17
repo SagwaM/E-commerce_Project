@@ -38,7 +38,7 @@ export const ProductsPage = () => {
   }, []);
 
   const filteredProducts = Array.isArray(products) ? products.filter(product =>
-    (selectedCategory === "All" || product.category === selectedCategory) &&
+    (selectedCategory === "Explore" || product.category === selectedCategory) &&
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   ): [];
 
