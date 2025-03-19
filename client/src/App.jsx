@@ -8,7 +8,7 @@ const AppLayout = () => {
 
   
   // ✅ Define routes where Navbar should NOT appear
-  const hideNavbarRoutes = ["/signup", "/login"];
+  const hideNavbarRoutes = ["/signup", "/login", "*"];
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isCustomerDashboard = location.pathname.startsWith("/customer");
 

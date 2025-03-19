@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 import AdminLayout from "../Layouts/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard";
@@ -20,6 +20,7 @@ const AdminRoutes = () => {
           <Route path="/admin/orders" element={<ManageOrders />} />
           <Route path="/admin/users" element={<ManageUsers />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
+         
 
         </Route>
       </Route>

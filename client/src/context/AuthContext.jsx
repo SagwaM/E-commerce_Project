@@ -103,7 +103,8 @@ export const AuthProvider = ({ children }) => {
     setToken("");
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    navigate("/login"); // Redirect to login page
+    // ✅ Ensure navigation updates state
+    navigate("/login", { replace: true });
   };
 
   return (

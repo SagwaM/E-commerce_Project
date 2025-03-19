@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
@@ -24,7 +24,7 @@ const AppRoutes = () => {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/customer/my-orders" element={<MyOrders />} />
         <Route path="/customer/profile" element={<ProfilePage />} />
-
+        
 
         {/* ✅ Protected Customer Route */}
         <Route

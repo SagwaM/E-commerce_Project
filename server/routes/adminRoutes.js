@@ -120,6 +120,7 @@ router.get("/stats", authMiddleware("Admin"), async (req, res) => {
       ]);
       const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
   
+      
       res.json({
         totalOrders,
         totalRevenue,
